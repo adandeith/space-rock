@@ -20,6 +20,8 @@ class Game:
         self.confettis = []
         self.title_screen = True
         self.game_over = False
+        self.pause_screen = False
+        self.ticker = 0
         self.load_static_assets()
         self.new_game() #à l'initialisation, on lance la méthode nouveau jeu
 
@@ -44,6 +46,7 @@ class Game:
         
         self.title_screen = True
         self.game_over = False
+        self.pause_screen = False
 
         self.object_renderer = ObjectRenderer(self)
         self.player = Player(self)
@@ -56,34 +59,46 @@ class Game:
         '''checks if the player presses certain keys to create actions'''
         key = pg.key.get_pressed()
         for event in pg.event.get():
-            if event.type == pg.QUIT or key[pg.K_ESCAPE] : 
+            if event.type == pg.QUIT : 
                 pg.quit()
                 sys.exit()
-            '''if key[pg.K_SPACE]: #crée un objet de la classe Projectile à chaque clic sur Espace et le stock dans une liste 
-                self.projectiles.append(Projectile(self))'''
             if key[pg.K_o]: 
                 self.rocks.append(Rock(self))
             if key[pg.K_c]: 
                 self.confettis.append(Confettis(self))
             if key[pg.K_RETURN] and self.title_screen :
-                self.title_screen = False
+                if self.ticker <= 0 :
+                    self.title_screen = False
+                    self.ticker = KEYBOARD_PRESS_TIME
+            if key[pg.K_ESCAPE] and not self.pause_screen and not self.game_over and not self.title_screen :
+                if self.ticker <= 0 :
+                    self.pause_screen = True
+                    self.ticker = KEYBOARD_PRESS_TIME
+                    print('pause on')
+            if key[pg.K_ESCAPE] and self.pause_screen :
+                if self.ticker <= 0 :
+                    self.pause_screen = False
+                    self.ticker = KEYBOARD_PRESS_TIME
+                    print('pause off')
 
 
     def update (self):
         '''updates the position of elements on screen and show the fps'''
-        self.player.update()
-        self.background.update()
-        self.ground.update()
+        if not self.pause_screen :
+            self.player.update()
+            self.background.update()
+            self.ground.update()
 
-        for projectile in self.projectiles : 
-            self.projectiles.remove(projectile) if projectile.is_offscreen() else projectile.update() #supprime l'object projectile de la la liste projectiles si l'objet est hors de l'écran (check si hors écran via la fonction spéciale is_offscreen de la classe Projectile())
+            for projectile in self.projectiles : 
+                self.projectiles.remove(projectile) if projectile.is_offscreen() else projectile.update() #supprime l'object projectile de la la liste projectiles si l'objet est hors de l'écran (check si hors écran via la fonction spéciale is_offscreen de la classe Projectile())
 
-        for confetti in self.confettis : 
-            self.confettis.remove(confetti) if confetti.is_offscreen() else confetti.update()
+            for confetti in self.confettis : 
+                self.confettis.remove(confetti) if confetti.is_offscreen() else confetti.update()
 
-        for rock in self.rocks :  
-            self.rocks.remove(rock) if rock.is_offscreen() else rock.update()
+            for rock in self.rocks :  
+                self.rocks.remove(rock) if rock.is_offscreen() else rock.update()
          
+        self.ticker -= 1
         pg.display.flip()
         self.dt = self.clock.tick(FPS) #paramètre le nombre de fps max du jeu avec le paramètre fps et stock la valeur dans une variable dt
         pg.display.set_caption(f'{self.clock.get_fps() :.1f}') #affiche les fps réels avec une décimale
@@ -91,7 +106,7 @@ class Game:
 
     def draw(self):
         '''resets the screen and draw the updated elements on screen'''
-        if not self.title_screen :
+        if not self.title_screen and not self.game_over:
             self.background.draw()
             self.ground.draw()
             self.player.draw()
@@ -102,8 +117,12 @@ class Game:
             for confetti in self.confettis :
                 confetti.draw()
             self.object_renderer.draw()
-        else :
+            if self.pause_screen :
+                self.object_renderer.pause()
+        elif self.title_screen :
             self.object_renderer.title_screen()
+        elif self.game_over :
+            self.object_renderer.game_over()
 
 
     def run(self):

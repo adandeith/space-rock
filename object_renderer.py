@@ -37,19 +37,19 @@ class ObjectRenderer():
         self.game.screen.blit(health, pos)
 
     def title_screen(self):
-        oscilation = math.sin(time.time()*6)*6 
+        oscillation = self.set_oscillation()
 
         img = self.game.image_background
         img_pos = (0, 0)
 
         title_txt = 'Space Rocks'
         title_size = self.title_font.size(title_txt)
-        title_pos = WIDTH//2 - title_size[0]//2, HEIGHT//2 - title_size[1]//2 + oscilation 
+        title_pos = WIDTH//2 - title_size[0]//2, HEIGHT//2 - title_size[1]//2 + oscillation 
         title_display = self.title_font.render(str(title_txt), True, self.text_color)
 
         instruction_txt = 'Press Enter to play'
         instruction_size = self.regular_font.size(instruction_txt)
-        instruction_pos = WIDTH//2 - instruction_size[0]//2, HEIGHT//2 + title_size[1] - instruction_size[1]//2 + oscilation 
+        instruction_pos = WIDTH//2 - instruction_size[0]//2, HEIGHT//2 + title_size[1] - instruction_size[1]//2 + oscillation 
         instruction_display = self.regular_font.render(str(instruction_txt), True, self.text_color)
 
         self.game.screen.blit(img, img_pos)
@@ -57,20 +57,44 @@ class ObjectRenderer():
         self.game.screen.blit(instruction_display, instruction_pos)
 
     def game_over(self):
+        now = pg.time.get_ticks()
+        oscillation = self.set_oscillation()
         img = self.game.image_background
         img_pos = (0, 0)
 
-        txt = 'Game Over'
-        txt_size = self.title_font.size(txt)
-        text_pos = WIDTH//2 - txt_size[0]//2, HEIGHT//2 - txt_size[1]//2
-        display = self.title_font.render(str(txt), True, self.text_color)
+        title_txt = 'Game Over'
+        title_size = self.title_font.size(title_txt)
+        title_pos = WIDTH//2 - title_size[0]//2, HEIGHT//2 - title_size[1]//2 + oscillation 
+        title_display = self.title_font.render(str(title_txt), True, self.text_color)
 
         self.game.screen.blit(img, img_pos)
-        self.game.screen.blit(display, text_pos)
+        self.game.screen.blit(title_display, title_pos)
+
+        if now - self.game.player.death_time > GAMEOVER_TIME:
+            self.game.new_game()
+
+    def pause(self):
+        oscillation = self.set_oscillation()
+
+        title_txt = 'Pause'
+        title_size = self.title_font.size(title_txt)
+        title_pos = WIDTH//2 - title_size[0]//2, HEIGHT//2 - title_size[1]//2 + oscillation 
+        title_display = self.title_font.render(str(title_txt), True, self.text_color)
+
+        instruction_txt = 'Press Escape to resume'
+        instruction_size = self.regular_font.size(instruction_txt)
+        instruction_pos = WIDTH//2 - instruction_size[0]//2, HEIGHT//2 + title_size[1] - instruction_size[1]//2 + oscillation 
+        instruction_display = self.regular_font.render(str(instruction_txt), True, self.text_color)
+
+        self.game.screen.blit(title_display, title_pos)
+        self.game.screen.blit(instruction_display, instruction_pos)
 
 
     def load_image(self, img):
         return pg.image.load(img).convert_alpha()
+
+    def set_oscillation(self):
+        return math.sin(time.time()*6)*6 
 
     def get_size(self, img):
         return img.get_width(), img.get_height()
