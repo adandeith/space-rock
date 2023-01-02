@@ -15,13 +15,15 @@ class Player(pg.sprite.Sprite):
         self.player_height = self.image.get_height()
         self._health = PLAYER_LIVES
         self._score = 0
+        self._death_time = 9000
+        self._ticker = 0
 
     def check_shoot(self):
-        pg.key.set_repeat()
         key = pg.key.get_pressed()
         shoot = key[pg.K_SPACE]
-        if shoot :
+        if shoot and self.ticker <= 0 :
             self.game.projectiles.append(Projectile(self.game))
+            self.ticker = SHOOTING_INTERVAL
 
     def get_damage(self, damage):
         self.health -= damage
@@ -30,10 +32,8 @@ class Player(pg.sprite.Sprite):
 
     def check_game_over(self):
         if self.health <=0 :
-            self.game.object_renderer.game_over()
-            pg.display.flip()
-            pg.time.delay(3500)
-            self.game.new_game()
+            self.game.game_over = True
+            self.death_time = pg.time.get_ticks()
 
 
     def check_move(self):
@@ -104,6 +104,7 @@ class Player(pg.sprite.Sprite):
         self.check_move()
         self.move_rect()
         self.check_shoot()
+        self.ticker -= 1
 
     @property
     def pos(self) :
@@ -114,8 +115,20 @@ class Player(pg.sprite.Sprite):
         return self._health
 
     @property
+    def death_time(self):
+        return self._death_time
+
+    @property
     def score(self):
         return self._score
+
+    @property
+    def ticker(self):
+        return self._ticker
+
+    @ticker.setter
+    def ticker(self, new_value):
+        self._ticker = new_value
 
     @health.setter
     def health(self, new_value):
@@ -124,3 +137,7 @@ class Player(pg.sprite.Sprite):
     @score.setter
     def score(self, new_value):
         self._score = new_value
+
+    @death_time.setter
+    def death_time(self, new_value):
+        self._death_time = new_value
