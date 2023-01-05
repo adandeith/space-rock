@@ -1,7 +1,7 @@
 import pygame as pg
 from settings import *
 from main import Game
-from projectile import Projectile
+from projectile import Projectile, SpecialProjectile
 
 
 class Player(pg.sprite.Sprite):
@@ -16,14 +16,25 @@ class Player(pg.sprite.Sprite):
         self._health = PLAYER_LIVES
         self._score = 0
         self._death_time = 9000
-        self._ticker = 0
+        self._ticker_shoot = 0
+        self._special_score = 0
 
     def check_shoot(self):
         key = pg.key.get_pressed()
         shoot = key[pg.K_SPACE]
-        if shoot and self.ticker <= 0 :
+        special_shoot = key[pg.K_p]
+        if shoot and self.ticker_shoot <= 0 :
             self.game.projectiles.append(Projectile(self.game))
-            self.ticker = SHOOTING_INTERVAL
+            self.ticker_shoot = SHOOTING_INTERVAL
+
+        if special_shoot and self.special_score == SPECIAL_INTERVAL :
+            self.game.special_projectiles.append(SpecialProjectile(self.game))
+            self.special_score = 0
+
+    def set_special_score(self, score):
+        ds = self.special_score + score
+        if ds <= SPECIAL_INTERVAL :
+            self.special_score += score
 
     def get_damage(self, damage):
         self.health -= damage
@@ -104,7 +115,7 @@ class Player(pg.sprite.Sprite):
         self.check_move()
         self.move_rect()
         self.check_shoot()
-        self.ticker -= 1
+        self.ticker_shoot -= 1
 
     @property
     def pos(self) :
@@ -123,12 +134,20 @@ class Player(pg.sprite.Sprite):
         return self._score
 
     @property
-    def ticker(self):
-        return self._ticker
+    def special_score(self):
+        return self._special_score
 
-    @ticker.setter
-    def ticker(self, new_value):
-        self._ticker = new_value
+    @special_score.setter
+    def special_score(self, new_value):
+        self._special_score = new_value
+
+    @property
+    def ticker_shoot(self):
+        return self._ticker_shoot
+
+    @ticker_shoot.setter
+    def ticker_shoot(self, new_value):
+        self._ticker_shoot = new_value
 
     @health.setter
     def health(self, new_value):

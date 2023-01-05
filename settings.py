@@ -13,6 +13,8 @@ PLAYER_SCALE = 1
 PLAYER_GUN_POS_RATIO = 1 - 0.22
 PLAYER_LIVES = 9
 SHOOTING_INTERVAL = 15
+SPECIAL_INTERVAL = 15
+INVINCIBILITY_TIME = 10
 
 #ground settings
 GROUND_RATIO = HEIGHT * 0.18 #the background (900x600px) was designed so that the wave part is roughly 108px heigh -> 108/600 = 18%
@@ -21,6 +23,7 @@ GROUND_Y_START = HEIGHT - GROUND_RATIO
 #projectile settings
 BULLET_SPEED = 0.25
 BULLET_SIZE = 5
+SUPER_BULLET_SIZE = 40
 
 #objects settings
 OBJECT_SIZE = 10

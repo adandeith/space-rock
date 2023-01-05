@@ -16,6 +16,7 @@ class Game:
         self.clock = pg.time.Clock()
         self.dt = 1
         self.projectiles = []
+        self.special_projectiles = []
         self.rocks = []
         self.confettis = []
         self.title_screen = True
@@ -92,6 +93,9 @@ class Game:
             for projectile in self.projectiles : 
                 self.projectiles.remove(projectile) if projectile.is_offscreen() else projectile.update() #supprime l'object projectile de la la liste projectiles si l'objet est hors de l'écran (check si hors écran via la fonction spéciale is_offscreen de la classe Projectile())
 
+            for special in self.special_projectiles : 
+                self.special_projectiles.remove(special) if special.is_offscreen() else special.update()
+
             for confetti in self.confettis : 
                 self.confettis.remove(confetti) if confetti.is_offscreen() else confetti.update()
 
@@ -112,6 +116,8 @@ class Game:
             self.player.draw()
             for projectile in self.projectiles :
                 projectile.draw()
+            for special in self.special_projectiles :
+                special.draw()
             for object in self.rocks :
                 object.draw()
             for confetti in self.confettis :

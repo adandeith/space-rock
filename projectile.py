@@ -13,7 +13,8 @@ class Projectile(pg.sprite.Sprite):
         self.dt = self.game.dt
         self.direction = 1
         self.rect = pg.Rect(self.x, self.y, BULLET_SIZE, BULLET_SIZE) #création d'un rectangle équivalent à la balle tirée par le joueur (utilisé pour vérifier la collision)
-    
+        self.color = (58, 242, 75) #green parrot #(1, 215, 88) #emerald green
+
     def move(self): 
         speed = self.direction * self.dt * BULLET_SPEED
         dx = speed
@@ -32,8 +33,7 @@ class Projectile(pg.sprite.Sprite):
         self.move()
 
     def draw(self):
-        projectile = pg.draw.circle(self.game.screen, 'green', (self.pos), BULLET_SIZE)
-
+        projectile = pg.draw.circle(self.game.screen, self.color, (self.pos), BULLET_SIZE)
     def is_offscreen(self) :
         if self.x > WIDTH or self.y < 0 :
             return True
@@ -43,3 +43,11 @@ class Projectile(pg.sprite.Sprite):
     @property
     def pos(self):
         return self.x, self.y
+
+class SpecialProjectile(Projectile):
+    def __init__(self, game):
+        super().__init__(game)
+        self.rect = pg.Rect(self.x, self.y, SUPER_BULLET_SIZE*2, SUPER_BULLET_SIZE*2)
+
+    def draw(self):
+        projectile = pg.draw.circle(self.game.screen, self.color, (self.pos), SUPER_BULLET_SIZE)
