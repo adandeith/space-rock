@@ -36,6 +36,17 @@ class ObjectRenderer():
         health = self.regular_font.render(str(self.game.player.health), True, self.text_color)
         self.game.screen.blit(health, pos)
 
+    def draw_special(self):
+        x = self.board_pos[0] + self.board_size[0]*0.355 
+        y = self.board_pos[1] + self.board_size[1]*0.35
+        color = (231, 51, 42)
+        visual_lenght = 125 #If the special bar changes size, the new size in pixel must be specified here
+        #The width is calculated based on the max special score (SPECIAL INTERVAL) and the size of the bar
+        width = (((self.game.player.special_score*100)/SPECIAL_INTERVAL)*visual_lenght)/100
+        height = 16
+
+        special = pg.draw.rect(self.game.screen, color, ((x,y), (width, height)))
+
     def title_screen(self):
         oscillation = self.set_oscillation()
 
@@ -103,3 +114,4 @@ class ObjectRenderer():
         self.draw_board()
         self.draw_score()
         self.draw_health()
+        self.draw_special()

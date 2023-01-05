@@ -161,7 +161,18 @@ class Rock(FlyingObject) :
                     self.is_dead = True
                     self.game.projectiles.remove(projectile)
                     self.game.player.score += 1
+                    self.game.player.set_special_score(1)
                     break
+
+            for special in self.game.special_projectiles :
+                collision = special.rect.colliderect(self.rect)
+                if collision :
+                    self.change_image()
+                    self.is_dead = True
+                    self.game.player.score += 1
+                    self.game.player.set_special_score(1)
+                    break
+
                 
         player_collision = self.game.player.rect.colliderect(self.rect)
         if not self.is_dead and not self.is_offscreen() and player_collision :
