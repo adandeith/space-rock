@@ -7,6 +7,9 @@ from projectile import *
 from player import *
 from objects import *
 from object_renderer import *
+from sound import *
+from pathfix import *
+from object_logic import *
 
 
 class Game:
@@ -27,16 +30,17 @@ class Game:
         self.new_game() #à l'initialisation, on lance la méthode nouveau jeu
 
     def load_static_assets(self):
-        self.image_background = pg.image.load('assets/BackgroundLarge.png').convert() #on va chercher l'image dans le dossier des assets 
+        self.image_background = pg.image.load(resource_path('assets\\img\\BackgroundLarge.png')).convert() #on va chercher l'image dans le dossier des assets 
         self.image_background = pg.transform.scale(self.image_background, RES) #transforme l'image en fonction de la résolution
 
-        self.image_ground = pg.image.load('assets/GroundLarge.png').convert()
+        self.image_ground = pg.image.load(resource_path('assets\\img\\GroundLarge.png')).convert()
         self.image_ground = pg.transform.scale(self.image_ground, (WIDTH, GROUND_RATIO))
 
-        self.image_player = pg.image.load('assets/player/Swordfish_resize.png').convert_alpha()
+        self.image_player = pg.image.load(resource_path('assets\\player\\Swordfish_resize.png')).convert_alpha()
 
-        self.regular_font = pg.font.Font('assets/font/Franchise.ttf', int(REGULAR_FONT_SIZE))
-        self.title_font = pg.font.Font('assets/font/Franchise.ttf', int(TITLE_FONT_SIZE))
+        self.regular_font = pg.font.Font(resource_path('assets\\font\\Franchise.ttf'), int(REGULAR_FONT_SIZE))
+        self.title_font = pg.font.Font(resource_path('assets\\font\\Franchise.ttf'), int(TITLE_FONT_SIZE))
+        self.instruction_font = pg.font.Font(resource_path('assets\\font\\Franchise.ttf'), int(INSTRUCTION_FONT_SIZE))
 
 
     def new_game(self):
@@ -53,6 +57,8 @@ class Game:
         self.player = Player(self)
         self.background = Background(self)
         self.ground = Ground(self)
+        self.sound = Sound(self)
+        self.spawn = Spawn(self)
 
         
 
@@ -75,20 +81,19 @@ class Game:
                 if self.ticker <= 0 :
                     self.pause_screen = True
                     self.ticker = KEYBOARD_PRESS_TIME
-                    print('pause on')
             if key[pg.K_ESCAPE] and self.pause_screen :
                 if self.ticker <= 0 :
                     self.pause_screen = False
                     self.ticker = KEYBOARD_PRESS_TIME
-                    print('pause off')
 
 
     def update (self):
         '''updates the position of elements on screen and show the fps'''
-        if not self.pause_screen :
+        if not self.title_screen and not self.pause_screen and not self.game_over :
             self.player.update()
             self.background.update()
             self.ground.update()
+            self.spawn.update()
 
             for projectile in self.projectiles : 
                 self.projectiles.remove(projectile) if projectile.is_offscreen() else projectile.update() #supprime l'object projectile de la la liste projectiles si l'objet est hors de l'écran (check si hors écran via la fonction spéciale is_offscreen de la classe Projectile())
@@ -102,6 +107,7 @@ class Game:
             for rock in self.rocks :  
                 self.rocks.remove(rock) if rock.is_offscreen() else rock.update()
          
+        self.sound.update() 
         self.ticker -= 1
         pg.display.flip()
         self.dt = self.clock.tick(FPS) #paramètre le nombre de fps max du jeu avec le paramètre fps et stock la valeur dans une variable dt
