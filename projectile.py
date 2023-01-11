@@ -1,5 +1,6 @@
 import pygame as pg
 from settings import *
+from pathfix import *
 
 class Projectile(pg.sprite.Sprite):
     '''Class to create moving object like bullets where the player stands and update its position through time
@@ -26,7 +27,7 @@ class Projectile(pg.sprite.Sprite):
         self.move_rect()
 
     def move_rect(self):
-        '''Internal function to update the rect position of the projectile'''
+        '''Internal method to update the rect position of the projectile'''
         self.rect.topleft = (self.pos)
 
     def update(self):
@@ -47,7 +48,11 @@ class Projectile(pg.sprite.Sprite):
 class SpecialProjectile(Projectile):
     def __init__(self, game):
         super().__init__(game)
-        self.rect = pg.Rect(self.x, self.y, SUPER_BULLET_SIZE*2, SUPER_BULLET_SIZE*2)
+        self.image = pg.image.load(resource_path('assets\\img\\Missile.png')).convert_alpha()
+        self.rect = self.image.get_rect(top = self.game.player.y - self.image.get_height() - 15 , height = self.image.get_height() + 15)
+        self.y = self.game.player.y + ((self.game.player.player_height * PLAYER_GUN_POS_RATIO) - (self.image.get_height())) 
+        #to have the image appear exactly where the gun stands, divide self.image.get_height() by 2
+        #shooting the missile lower is visually more accurate but the player has to go down a bit after he shot in order to avoid the rocks, which is inconvenient and defeats the purpose of having a special attack
 
     def draw(self):
-        projectile = pg.draw.circle(self.game.screen, self.color, (self.pos), SUPER_BULLET_SIZE)
+        self.game.screen.blit(self.image, self.pos)

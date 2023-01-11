@@ -17,6 +17,7 @@ class Player(pg.sprite.Sprite):
         self._score = 0
         self._death_time = 9000
         self._ticker_shoot = 0
+        self._ticker_damage = 0
         self._special_score = 0
 
     def check_shoot(self):
@@ -26,20 +27,29 @@ class Player(pg.sprite.Sprite):
         if shoot and self.ticker_shoot <= 0 :
             self.game.projectiles.append(Projectile(self.game))
             self.ticker_shoot = SHOOTING_INTERVAL
+            self.game.sound.shoot.play()
 
-        if special_shoot and self.special_score == SPECIAL_INTERVAL :
+        if special_shoot and self.special_score == SPECIAL_ATTACK_INTERVAL :
             self.game.special_projectiles.append(SpecialProjectile(self.game))
             self.special_score = 0
+            self.game.sound.missile.play()
 
     def set_special_score(self, score):
         ds = self.special_score + score
-        if ds <= SPECIAL_INTERVAL :
+        if ds <= SPECIAL_ATTACK_INTERVAL :
             self.special_score += score
 
     def get_damage(self, damage):
-        self.health -= damage
-        #plays damage sound
-        self.check_game_over()
+        '''Method used to damage the player health
+        
+        When the player gets damage, a ticker is set.
+        At each frame, the ticker gets -1 in the update method. If the player is touched while the ticker is superior to 0, he doesn't get any damage.
+        This allows the player some invicibility time between two touches'''
+        if self.ticker_damage <= 0 :
+            self.health -= damage
+            self.ticker_damage = INVINCIBILITY_TIME
+            self.game.sound.hit.play()
+            self.check_game_over()
 
     def check_game_over(self):
         if self.health <=0 :
@@ -89,7 +99,7 @@ class Player(pg.sprite.Sprite):
 
 
     def check_wall_collision(self, dx, dy):
-        '''internal function to check if the player will go off screen when pressing a key and moving'''
+        '''Internal method to check if the player will go off screen when pressing a key and moving'''
         x_position = self.x + dx
         y_position = self.y + dy
 
@@ -101,7 +111,7 @@ class Player(pg.sprite.Sprite):
                 self.y += dy
 
     def move_rect(self):
-        '''Internal function to update the rect position of the projectile'''
+        '''Internal method to update the rect position of the projectile'''
         self.rect.topleft = (self.pos)
 
     def draw(self):
@@ -116,6 +126,7 @@ class Player(pg.sprite.Sprite):
         self.move_rect()
         self.check_shoot()
         self.ticker_shoot -= 1
+        self.ticker_damage -= 1
 
     @property
     def pos(self) :
@@ -148,6 +159,14 @@ class Player(pg.sprite.Sprite):
     @ticker_shoot.setter
     def ticker_shoot(self, new_value):
         self._ticker_shoot = new_value
+
+    @property
+    def ticker_damage(self):
+        return self._ticker_damage
+
+    @ticker_damage.setter
+    def ticker_damage(self, new_value):
+        self._ticker_damage = new_value
 
     @health.setter
     def health(self, new_value):

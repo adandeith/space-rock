@@ -3,6 +3,7 @@ from settings import *
 import os
 from collections import deque
 from random import uniform, randint, random
+from pathfix import *
 
 error_compensation = 0.001
 
@@ -50,31 +51,31 @@ class FixedObject() :
 
 
 class Board(FixedObject):
-    def __init__(self, game, image_path = 'assets/Board V2.2.png'):
+    def __init__(self, game, image_path = 'assets\\Board V2.2.png'):
         super().__init__(game, image_path)
         self.x = (WIDTH//2) - (self.size[0]//2) #centre le board au milieu de l'écran en haut
         self.y = 0
 
 class GameOver(FixedObject):
-    def __init__(self, game, image_path= 'assets/Game Over.png'):
+    def __init__(self, game, image_path= resource_path('assets\\Game Over.png')):
         super().__init__(game, image_path)
 
 class FlyingObject(pg.sprite.Sprite):
     '''Simple class to create an object going from the right side of the screen to the left
     
-    The optionnal argument folder_name must the name of a sub-folder where images of the object are saved.
-    For example : passing the argument folder_name = ROCK will generate a path ..\\assets\ROCK.
+    The optionnal argument folder_name must the name of a sub-folder where only the images of the object are saved.
 
-    If folder_name is not completed, the class will generate a circle with no image.
+    If folder_name is not completed, the class will generate a randomly colored circle with no image.
     '''
     def __init__(self, game, x = WIDTH, folder_name = None):
         super().__init__()
         self.game = game
         self.x = x
-        self.y = randint(int(HEIGHT * 0.1), int(HEIGHT * 0.9))
+        self.y = randint(int(HEIGHT * 0.05), int(HEIGHT * 0.90))
         self.size = OBJECT_SIZE
         self.speed = FLYING_SPEED*uniform(0.3, 0.5)*self.game.dt
-        self.path = folder_name
+        if folder_name :
+            self.path = resource_path(folder_name)
         self.used_image = None
         self.is_dead = False
 
@@ -111,7 +112,7 @@ class FlyingObject(pg.sprite.Sprite):
         self.move_rect()
 
     def move_rect(self):
-        '''Internal function to update the rect position of the projectile'''
+        '''Internal method to update the rect position of the projectile'''
         self.rect.topleft = (self.pos)
 
     def update(self):
@@ -139,7 +140,7 @@ class FlyingObject(pg.sprite.Sprite):
         return images
 
     def change_image(self):
-        '''Function used to change the image of the object and resets the rect attribute to fit the new image'''
+        '''Method used to change the image of the object and resets the rect attribute to fit the new image'''
         self.used_image = self.images[1]
         self.rect = self.used_image.get_rect()
         self.rect.topleft = self.pos
@@ -149,7 +150,7 @@ class FlyingObject(pg.sprite.Sprite):
         return self.x, self.y
 
 class Rock(FlyingObject) :
-    def __init__(self, game, x=WIDTH, folder_name = 'assets/rock'):
+    def __init__(self, game, x=WIDTH, folder_name = 'assets\\rock'):
         super().__init__(game, x, folder_name)
 
     def check_collision(self) :
