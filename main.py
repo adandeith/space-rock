@@ -22,6 +22,7 @@ class Game:
         self.special_projectiles = []
         self.rocks = []
         self.confettis = []
+        self.best_score = 0
         self.title_screen = True
         self.game_over = False
         self.pause_screen = False

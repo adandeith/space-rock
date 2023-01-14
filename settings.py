@@ -1,6 +1,6 @@
 #screen settings
-RES = WIDTH, HEIGHT =1200, 720 #900,600
-FPS = 60
+RES = WIDTH, HEIGHT = 1200, 720
+FPS = 60 #changing the fps will affect the frequency of the tickers' update, making the game much faster (the player will shoot faster and the rocks will spawn faster as well)
 SCROLL_SPEED = 3.5
 REGULAR_FONT_SIZE = 25
 TITLE_FONT_SIZE = 125
@@ -33,3 +33,4 @@ HIT_Y_MARGIN = 1
 #other settings
 GAMEOVER_TIME = 5000 #pygame counts in milliseconds, 5000ms = 5s
 KEYBOARD_PRESS_TIME = 10
+CELEBRATION_TIME = 5000

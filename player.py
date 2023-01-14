@@ -19,11 +19,13 @@ class Player(pg.sprite.Sprite):
         self._ticker_shoot = 0
         self._ticker_damage = 0
         self._special_score = 0
+        self._best_score_time = 0
+        self.best_score_found = False
 
     def check_shoot(self):
         key = pg.key.get_pressed()
         shoot = key[pg.K_SPACE]
-        special_shoot = key[pg.K_p]
+        special_shoot = key[pg.K_s]
         if shoot and self.ticker_shoot <= 0 :
             self.game.projectiles.append(Projectile(self.game))
             self.ticker_shoot = SHOOTING_INTERVAL
@@ -55,14 +57,25 @@ class Player(pg.sprite.Sprite):
         if self.health <=0 :
             self.game.game_over = True
             self.death_time = pg.time.get_ticks()
+            if self.score > self.game.best_score :
+                self.game.best_score = self.score
+
+    def check_best_score(self) -> bool :
+        '''Method to check if the current score is higher than the one in the last game
+        If a best score is found, the time will be updated (best_score_time) and the method will return True'''
+        if not self.best_score_found :
+                self.best_score_time = pg.time.get_ticks()
+        if self.score > self.game.best_score and self.game.best_score > 0 :
+            self.best_score_found = True
+            return True
 
 
     def check_move(self):
         key = pg.key.get_pressed()
-        go_left = key[pg.K_LEFT] or key[pg.K_q]
-        go_right = key[pg.K_RIGHT] or key[pg.K_d]
-        go_up = key[pg.K_UP] or key[pg.K_z]
-        go_down = key[pg.K_DOWN] or key[pg.K_s]
+        go_left = key[pg.K_LEFT] 
+        go_right = key[pg.K_RIGHT]  
+        go_up = key[pg.K_UP] 
+        go_down = key[pg.K_DOWN]
         
         dx, dy = 0, 0
         speed = self.game.dt * PLAYER_SPEED
@@ -179,3 +192,11 @@ class Player(pg.sprite.Sprite):
     @death_time.setter
     def death_time(self, new_value):
         self._death_time = new_value
+
+    @property
+    def best_score_time(self):
+        return self._best_score_time 
+
+    @best_score_time.setter
+    def best_score_time(self, new_value):
+        self._best_score_time = new_value
