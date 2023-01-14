@@ -17,6 +17,7 @@ class Sound():
         self.hit.set_volume(0.4)
         self.shoot.set_volume(0.045)
         self.missile.set_volume(0.4)
+        self.explosion.set_volume(0.25)
 
         pg.mixer.music.set_volume(0.6)
 
@@ -27,7 +28,7 @@ class Sound():
             pg.mixer.music.play(-1)
             self.plays_theme = True
         
-        pg.mixer.music.set_volume(0.2) if self.game.pause_screen else pg.mixer.music.set_volume(0.6)
+        pg.mixer.music.set_volume(0.15) if self.game.pause_screen else pg.mixer.music.set_volume(0.6)
 
         if self.game.game_over :
             pg.mixer.music.fadeout(int(GAMEOVER_TIME)) 

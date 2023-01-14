@@ -85,12 +85,12 @@ class ObjectRenderer():
         instruction_pos = WIDTH//2 - instruction_size[0]//2, title_pos[1] + title_size[1] + 40  
         instruction_display = self.instruction_font.render(str(instruction_txt), True, self.text_color)
 
-        instruction2_txt = 'Created by adandeith'
+        instruction2_txt = 'Programming / Design / Sound       adandeith'
         instruction2_size = self.instruction_font.size(instruction2_txt)
-        instruction2_pos = WIDTH//2 - instruction2_size[0]//2, instruction_pos[1] + instruction_size[1] + 20
+        instruction2_pos = WIDTH//2 - instruction2_size[0]//2, instruction_pos[1] + instruction_size[1] + 25
         instruction2_display = self.instruction_font.render(str(instruction2_txt), True, self.text_color)
 
-        instruction3_txt = 'Theme composed by penugwin'
+        instruction3_txt = "Main theme 'Street lamps'            penugwin"
         instruction3_size = self.instruction_font.size(instruction3_txt)
         instruction3_pos = WIDTH//2 - instruction3_size[0]//2, instruction2_pos[1] + instruction2_size[1] + 5 
         instruction3_display = self.instruction_font.render(str(instruction3_txt), True, self.text_color)

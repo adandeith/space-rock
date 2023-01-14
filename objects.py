@@ -160,6 +160,7 @@ class Rock(FlyingObject) :
                 if collision :
                     self.change_image()
                     self.is_dead = True
+                    self.game.sound.explosion.play()
                     self.game.projectiles.remove(projectile)
                     self.game.player.score += 1
                     self.game.player.set_special_score(1)
@@ -170,6 +171,7 @@ class Rock(FlyingObject) :
                 if collision :
                     self.change_image()
                     self.is_dead = True
+                    self.game.sound.explosion.play()
                     self.game.player.score += 1
                     self.game.player.set_special_score(1)
                     break
@@ -179,6 +181,7 @@ class Rock(FlyingObject) :
         if not self.is_dead and not self.is_offscreen() and player_collision :
             self.change_image()
             self.is_dead = True
+            self.game.sound.explosion.play()
             self.game.player.get_damage(1)
             
     def update(self):

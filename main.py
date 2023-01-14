@@ -22,6 +22,7 @@ class Game:
         self.special_projectiles = []
         self.rocks = []
         self.confettis = []
+        self.best_score = 0
         self.title_screen = True
         self.game_over = False
         self.pause_screen = False
@@ -69,10 +70,6 @@ class Game:
             if event.type == pg.QUIT : 
                 pg.quit()
                 sys.exit()
-            if key[pg.K_o]: 
-                self.rocks.append(Rock(self))
-            if key[pg.K_c]: 
-                self.confettis.append(Confettis(self))
             if key[pg.K_RETURN] and self.title_screen :
                 if self.ticker <= 0 :
                     self.title_screen = False
