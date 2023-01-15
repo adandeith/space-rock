@@ -87,19 +87,25 @@ class ObjectRenderer():
 
         instruction2_txt = 'Programming / Design / Sound       adandeith'
         instruction2_size = self.instruction_font.size(instruction2_txt)
-        instruction2_pos = WIDTH//2 - instruction2_size[0]//2, instruction_pos[1] + instruction_size[1] + 25
+        instruction2_pos = WIDTH//2 - instruction2_size[0]//2 -1, instruction_pos[1] + instruction_size[1] + 35
         instruction2_display = self.instruction_font.render(str(instruction2_txt), True, self.text_color)
 
-        instruction3_txt = "Main theme 'Street lamps'            penugwin"
+        instruction3_txt = "Main theme 'Street lamps'              penugwin"
         instruction3_size = self.instruction_font.size(instruction3_txt)
-        instruction3_pos = WIDTH//2 - instruction3_size[0]//2, instruction2_pos[1] + instruction2_size[1] + 5 
+        instruction3_pos = WIDTH//2 - instruction3_size[0]//2 -6, instruction2_pos[1] + instruction2_size[1] + 5 
         instruction3_display = self.instruction_font.render(str(instruction3_txt), True, self.text_color)
+
+        instruction4_txt = "Swordfish spacecraft design     dragonith"
+        instruction4_size = self.instruction_font.size(instruction4_txt)
+        instruction4_pos = WIDTH//2 - instruction4_size[0]//2 -1, instruction3_pos[1] + instruction3_size[1] + 5 
+        instruction4_display = self.instruction_font.render(str(instruction4_txt), True, self.text_color)
 
         self.game.screen.blit(img, img_pos)
         self.game.screen.blit(title_display, title_pos)
         self.game.screen.blit(instruction_display, instruction_pos)
         self.game.screen.blit(instruction2_display, instruction2_pos)
         self.game.screen.blit(instruction3_display, instruction3_pos)
+        self.game.screen.blit(instruction4_display, instruction4_pos)
 
         if now - self.game.player.death_time > GAMEOVER_TIME:
             self.game.new_game()
