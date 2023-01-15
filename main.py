@@ -108,7 +108,7 @@ class Game:
         self.ticker -= 1
         pg.display.flip()
         self.dt = self.clock.tick(FPS) #paramètre le nombre de fps max du jeu avec le paramètre fps et stock la valeur dans une variable dt
-        pg.display.set_caption(f'{self.clock.get_fps() :.1f}') #affiche les fps réels avec une décimale
+        pg.display.set_caption(f'Space Rocks ({self.clock.get_fps() :.1f})') #affiche les fps réels avec une décimale
 
 
     def draw(self):
